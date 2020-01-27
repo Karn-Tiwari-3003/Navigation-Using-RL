@@ -40,7 +40,7 @@ public class NavAgent : Agent
     public void MoveAgent(float[] act)
     {
         var dirToGo = Vector3.zero;
-        var rotateDir = Vector3.zero;
+        // var rotateDir = Vector3.zero;
 
         var action = Mathf.FloorToInt(act[0]);
         switch (action)
@@ -52,13 +52,13 @@ public class NavAgent : Agent
                 dirToGo = transform.forward * -1f;
                 break;
             case 3:
-                rotateDir = transform.up * 1f;
+                dirToGo = transform.right * 1f;
                 break;
             case 4:
-                rotateDir = transform.up * -1f;
+                dirToGo = transform.right * -1f;
                 break;
         }
-        transform.Rotate(rotateDir, Time.deltaTime * 200f);
+        // transform.Rotate(rotateDir, Time.deltaTime * 200f);
         m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
     }
 
@@ -95,7 +95,8 @@ public class NavAgent : Agent
         var items = enumerable.ToArray();
 
         m_AgentRb.velocity = Vector3.zero;
-        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        transform.position = (new Vector3(Random.Range(3, 47), transform.position.y, Random.Range(-47, -3)));
+        // transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
     }
 
     void OnCollisionEnter(Collision collision)
