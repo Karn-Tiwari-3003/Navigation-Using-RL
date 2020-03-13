@@ -9,9 +9,18 @@ public class NavAgent : Agent
     Rigidbody m_AgentRb;
     RayPerception m_RayPer;
     public bool useVectorObs;
+	public Rigidbody m_targetRb;
 
     public override void InitializeAgent()
     {
+        base.InitializeAgent();
+        m_AgentRb = GetComponent<Rigidbody>();
+        m_RayPer = GetComponent<RayPerception>();
+    }
+
+    void start()
+    {
+    	SetReward(1.0f);
         base.InitializeAgent();
         m_AgentRb = GetComponent<Rigidbody>();
         m_RayPer = GetComponent<RayPerception>();
@@ -28,12 +37,21 @@ public class NavAgent : Agent
 
             string[] detectableObjects = { "target", "wall" };
             // AddVectorObs();
-            // AddVectorObs(m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects));
-            // AddVectorObs(m_RayPer.Perceive(rayDistance, rayAngles1, detectableObjects, 0f, 5f));
-            // AddVectorObs(m_RayPer.Perceive(rayDistance, rayAngles2, detectableObjects, 0f, 10f));
+            var P = m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects);
+            var P1 = m_RayPer.Perceive(rayDistance, rayAngles1, detectableObjects);
+            var P2 = m_RayPer.Perceive(rayDistance, rayAngles2, detectableObjects);
+            AddVectorObs(m_targetRb.position);
+            AddVectorObs(P);
+            AddVectorObs(P1);
+            AddVectorObs(P2);
             // AddVectorObs(transform.InverseTransformDirection(m_AgentRb.velocity));
-            // AddVectorObs(transform.InverseTransformDirection(transform.position));
-            Debug.Log(m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects));
+            AddVectorObs(this.transform.position);
+            // foreach (float per in P)
+	           //  Debug.Log(per.ToString());
+	        // Debug.Log(P.Count * 3);//
+	        // Debug.Log(transform.InverseTransformDirection(m_AgentRb.velocity));
+	        // Debug.Log(transform.InverseTransformDirection(transform.position));
+				//String.Join("", new List<int>(P).ConvertAll(i => i.ToString()).ToArray()));
         }
     }
 
@@ -41,31 +59,47 @@ public class NavAgent : Agent
     {
         var dirToGo = Vector3.zero;
         // var rotateDir = Vector3.zero;
+        dirToGo.x = act[0];
+        dirToGo.z = act[1];
 
-        var action = Mathf.FloorToInt(act[0]);
-        switch (action)
-        {
-            case 1:
-                dirToGo = transform.forward * 1f;
-                break;
-            case 2:
-                dirToGo = transform.forward * -1f;
-                break;
-            case 3:
-                dirToGo = transform.right * 1f;
-                break;
-            case 4:
-                dirToGo = transform.right * -1f;
-                break;
-        }
+
+        // Debug.Log("" + act[0] + "," + act[1]);
+        // var action = Mathf.FloorToInt(act[0]);
+        // switch (action)
+        // {
+        //     case 0:
+        //         dirToGo = transform.forward * 1f;
+        //         break;
+        //     case 1:
+        //         dirToGo = transform.forward * -1f;
+        //         break;
+        // }
+        // m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
+        // // if(dirToGo != transform.forward && dirToGo != Vector3.zero)
+	       //  // Debug.Log(dirToGo);
+
+        // action = Mathf.FloorToInt(act[1]);
+        // switch (action)
+        // {
+        //     case 0:
+        //         dirToGo = transform.right * 1f;
+        //         break;
+        //     case 1:
+        //         dirToGo = transform.right * -1f;
+        //         break;
+        // }
         // transform.Rotate(rotateDir, Time.deltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
+        m_AgentRb.AddForce(dirToGo * 5f, ForceMode.VelocityChange);
+        // if(dirToGo != transform.forward && dirToGo != Vector3.zero)
+        Debug.Log(dirToGo);
     }
 
     public override void AgentAction(float[] vectorAction)
     {
-        AddReward(-1f / agentParameters.maxStep);
+        AddReward(-1f / agentParameters.maxStep - Math.Abs(Vector3.Distance(m_AgentRb.position, m_targetRb.position))/50000);
+        // Debug.Log(Math.Abs(Vector3.Distance(m_AgentRb.position, m_targetRb.position))/100);
         MoveAgent(vectorAction);
+
     }
 
     public override float[] Heuristic()
@@ -91,8 +125,8 @@ public class NavAgent : Agent
 
     public override void AgentReset()
     {
-        var enumerable = Enumerable.Range(0, 9).OrderBy(x => Guid.NewGuid()).Take(9);
-        var items = enumerable.ToArray();
+        // var enumerable = Enumerable.Range(0, 9).OrderBy(x => Guid.NewGuid()).Take(9);
+        // var items = enumerable.ToArray();
 
         m_AgentRb.velocity = Vector3.zero;
         transform.position = (new Vector3(Random.Range(3, 47), transform.position.y, Random.Range(-47, -3)));
@@ -103,9 +137,15 @@ public class NavAgent : Agent
     {
         if (collision.gameObject.CompareTag("target"))
         {
-            SetReward(2f);
             Done();
+            SetReward(2f);
             Debug.Log("Done");
+            m_targetRb.velocity = Vector3.zero;
+            m_targetRb.transform.position = (new Vector3(Random.Range(-3, -47), transform.position.y, Random.Range(3, 47)));
+        }
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            AddReward(-0.2f);
         }
     }
 
