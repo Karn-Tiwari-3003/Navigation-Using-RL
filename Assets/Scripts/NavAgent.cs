@@ -33,7 +33,8 @@ public class NavAgent : Agent
             // AddVectorObs(m_RayPer.Perceive(rayDistance, rayAngles2, detectableObjects, 0f, 10f));
             // AddVectorObs(transform.InverseTransformDirection(m_AgentRb.velocity));
             // AddVectorObs(transform.InverseTransformDirection(transform.position));
-            Debug.Log(m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects));
+            string tmp = string.Join(" ", m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects));
+            Debug.Log(tmp);
         }
     }
 
