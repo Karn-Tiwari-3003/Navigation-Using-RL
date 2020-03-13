@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"count":1,"self":1546.7429888,"total":1548.271613,"children":{"AgentResetIfDone":{"count":1849,"self":0.0037698999999999996,"total":0.0037698999999999996,"children":null},"AgentSendState":{"count":1849,"self":0.0146539,"total":1.5078535,"children":{"CollectObservations":{"count":1849,"self":1.4931995999999998,"total":1.4931995999999998,"children":null}}},"DecideAction":{"count":1849,"self":0.0089912,"total":0.0089912,"children":null},"AcademyStep":{"count":1849,"self":0.0009563,"total":0.0009563,"children":null},"AgentAct":{"count":1849,"self":0.0060504999999999995,"total":0.0060504999999999995,"children":null}}}
+=======
+{"count":1,"self":5.889352,"total":6.2835773,"children":{"AgentResetIfDone":{"count":93,"self":0.0039822,"total":0.0039822,"children":null},"AgentSendState":{"count":93,"self":0.0059365,"total":0.3690747,"children":{"CollectObservations":{"count":186,"self":0.36313819999999997,"total":0.36313819999999997,"children":null}}},"DecideAction":{"count":93,"self":0.018182,"total":0.018182,"children":null}}}
+>>>>>>> 40eeba67e95b3b846cbd5583ed9d3b055cc5a4bd
