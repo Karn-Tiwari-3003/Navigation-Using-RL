@@ -45,11 +45,6 @@ public class NavAgent : Agent
             AddVectorObs(P1);
             AddVectorObs(P2);
             // AddVectorObs(transform.InverseTransformDirection(m_AgentRb.velocity));
-<<<<<<< HEAD
-            // AddVectorObs(transform.InverseTransformDirection(transform.position));
-            string tmp = string.Join(" ", m_RayPer.Perceive(rayDistance, rayAngles, detectableObjects));
-            Debug.Log(tmp);
-=======
             AddVectorObs(this.transform.position);
             // foreach (float per in P)
 	           //  Debug.Log(per.ToString());
@@ -57,7 +52,6 @@ public class NavAgent : Agent
 	        // Debug.Log(transform.InverseTransformDirection(m_AgentRb.velocity));
 	        // Debug.Log(transform.InverseTransformDirection(transform.position));
 				//String.Join("", new List<int>(P).ConvertAll(i => i.ToString()).ToArray()));
->>>>>>> 40eeba67e95b3b846cbd5583ed9d3b055cc5a4bd
         }
     }
 
@@ -97,7 +91,7 @@ public class NavAgent : Agent
         // transform.Rotate(rotateDir, Time.deltaTime * 200f);
         m_AgentRb.AddForce(dirToGo * 5f, ForceMode.VelocityChange);
         // if(dirToGo != transform.forward && dirToGo != Vector3.zero)
-        Debug.Log(dirToGo);
+        // Debug.Log(dirToGo);
     }
 
     public override void AgentAction(float[] vectorAction)
@@ -106,27 +100,33 @@ public class NavAgent : Agent
         // Debug.Log(Math.Abs(Vector3.Distance(m_AgentRb.position, m_targetRb.position))/100);
         MoveAgent(vectorAction);
 
+        /* string str1 = GetReward().ToString();
+        str1 = "Reward is " + str1;
+        string str2 = GetCumulativeReward().ToString();
+        str2 = "Cumulative Reward is " + str2;
+        Debug.Log(str1);
+        Debug.Log(str2); */
     }
 
     public override float[] Heuristic()
     {
         if (Input.GetKey(KeyCode.D))
         {
-            return new float[] { 3 };
+            return new float[] { 1, 0 };
         }
         if (Input.GetKey(KeyCode.W))
         {
-            return new float[] { 1 };
+            return new float[] { 0, 1 };
         }
         if (Input.GetKey(KeyCode.A))
         {
-            return new float[] { 4 };
+            return new float[] { -1, 0 };
         }
         if (Input.GetKey(KeyCode.S))
         {
-            return new float[] { 2 };
+            return new float[] { 0, -1 };
         }
-        return new float[] { 0 };
+        return new float[] { 0, 0 };
     }
 
     public override void AgentReset()
@@ -144,14 +144,22 @@ public class NavAgent : Agent
         if (collision.gameObject.CompareTag("target"))
         {
             Done();
-            SetReward(2f);
+            SetReward(5f);
             Debug.Log("Done");
             m_targetRb.velocity = Vector3.zero;
-            m_targetRb.transform.position = (new Vector3(Random.Range(-3, -47), transform.position.y, Random.Range(3, 47)));
+            m_targetRb.transform.position = (new Vector3(Random.Range(-47, 47), transform.position.y, Random.Range(-47, 47)));
         }
-        if (collision.gameObject.CompareTag("wall"))
+        /* if (collision.gameObject.CompareTag("wall"))
         {
             AddReward(-0.2f);
+        } */
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            AddReward(-0.020f);
         }
     }
 
